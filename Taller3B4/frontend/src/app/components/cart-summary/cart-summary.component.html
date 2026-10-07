@@ -1,0 +1,38 @@
+<div class="cart-container" *ngIf="cartItems$ | async as cartItems">
+  <h2>Resumen de Compra</h2>
+  
+  <div *ngIf="cartItems.length === 0">
+    <p>Tu carrito está vacío.</p>
+  </div>
+
+  <table *ngIf="cartItems.length > 0" style="width: 100%; text-align: left;">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Precio</th>
+        <th>Cantidad</th>
+        <th>Subtotal</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of cartItems">
+        <td>{{ item.product.name }}</td>
+        <td>{{ item.product.price | currency:'GTQ' }}</td>
+        <td>
+          <input type="number" [value]="item.quantity" min="1" (change)="updateQuantity(item.product.id, $event)">
+        </td>
+        <!-- Uso del Pipe Personalizado para el subtotal -->
+        <td>{{ item.product.price | subtotal:item.quantity | currency:'GTQ' }}</td>
+        <td>
+          <button (click)="removeItem(item.product.id)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="cartItems.length > 0" style="margin-top: 1rem; text-align: right;">
+    <!-- Uso del Pipe Personalizado para el total -->
+    <h3>Total General: {{ cartItems | cartTotal | currency:'GTQ' }}</h3>
+  </div>
+</div>
